@@ -1,5 +1,3 @@
-require('globalthis')();
-
 const express = require('express');
 const app = express();
 
@@ -114,17 +112,17 @@ class Param {
  * 4. Acquire data by pushing '.in(<foreign key array>)' command to 'params' array.
  * 
  */
-app.get('/f1/seasons', async (req, res) => {
+app.get('/api/seasons', async (req, res) => {
     const data = await fetchData('seasons', [], []);
     res.send(data);
 });
 
-app.get('/f1/circuits', async (req, res) => {
+app.get('/api/circuits', async (req, res) => {
     const data = await fetchData('circuits', [], []);
     res.send(data);
 });
 
-app.get('/f1/circuits/:ref', async (req, res) => {
+app.get('/api/circuits/:ref', async (req, res) => {
     const params = [];
     params.push(new Param('ilike', 'circuitRef', req.params.ref));
 
@@ -132,7 +130,7 @@ app.get('/f1/circuits/:ref', async (req, res) => {
     res.send(data);
 });
 
-app.get('/f1/circuits/season/:year', async (req, res) => {
+app.get('/api/circuits/season/:year', async (req, res) => {
     const params = [];
     params.push(new Param('eq', 'year', req.params.year));
     params.push(new Param('order', 'round', { ascending: true }));
@@ -153,12 +151,12 @@ app.get('/f1/circuits/season/:year', async (req, res) => {
     }
 });
 
-app.get('/f1/constructors', async (req, res) => {
+app.get('/api/constructors', async (req, res) => {
     const data = await fetchData('constructors', [], []);
     res.send(data);
 });
 
-app.get('/f1/constructors/:ref', async (req, res) => {
+app.get('/api/constructors/:ref', async (req, res) => {
     const params = [];
     params.push(new Param('ilike', 'constructorRef', req.params.ref));
 
@@ -166,12 +164,12 @@ app.get('/f1/constructors/:ref', async (req, res) => {
     res.send(data);
 });
 
-app.get('/f1/drivers', async (req, res) => {
+app.get('/api/drivers', async (req, res) => {
     const data = await fetchData('drivers', [], []);
     res.send(data);
 });
 
-app.get('/f1/drivers/:ref', async (req, res) => {
+app.get('/api/drivers/:ref', async (req, res) => {
     const params = [];
     params.push(new Param('ilike', 'driverRef', req.params.ref));
 
@@ -179,7 +177,7 @@ app.get('/f1/drivers/:ref', async (req, res) => {
     res.send(data);
 });
 
-app.get('/f1/drivers/search/:substring', async (req, res) => {
+app.get('/api/drivers/search/:substring', async (req, res) => {
     const params = [];
     params.push(new Param('prefix', 'surname', req.params.substring));
 
@@ -188,7 +186,7 @@ app.get('/f1/drivers/search/:substring', async (req, res) => {
 
 });
 
-app.get('/f1/drivers/race/:raceId', async (req, res) => {
+app.get('/api/drivers/race/:raceId', async (req, res) => {
     const params = [];
     params.push(new Param('eq', 'raceId', req.params.raceId));
 
@@ -207,7 +205,7 @@ app.get('/f1/drivers/race/:raceId', async (req, res) => {
     }
 });
 
-app.get('/f1/races/:raceId', async (req, res) => {
+app.get('/api/races/:raceId', async (req, res) => {
     const columns = ['raceId', 'year', 'round',
         'circuitId(name, location, country)',
         'name', 'date', 'time', 'url',
@@ -221,7 +219,7 @@ app.get('/f1/races/:raceId', async (req, res) => {
     res.send(data);
 });
 
-app.get('/f1/races/season/:year', async (req, res) => {
+app.get('/api/races/season/:year', async (req, res) => {
     const params = [];
     params.push(new Param('eq', 'year', req.params.year));
     params.push(new Param('order', 'round', { ascending: true }));
@@ -230,7 +228,7 @@ app.get('/f1/races/season/:year', async (req, res) => {
     res.send(data);
 });
 
-app.get('/f1/races/season/:year/:round', async (req, res) => {
+app.get('/api/races/season/:year/:round', async (req, res) => {
     const params = [];
     params.push(new Param('eq', 'year', req.params.year));
     params.push(new Param('eq', 'round', req.params.round));
@@ -239,7 +237,7 @@ app.get('/f1/races/season/:year/:round', async (req, res) => {
     res.send(data);
 });
 
-app.get('/f1/races/circuits/:ref', async (req, res) => {
+app.get('/api/races/circuits/:ref', async (req, res) => {
     const params = [];
     params.push(new Param('ilike', 'circuitRef', req.params.ref));
 
@@ -257,7 +255,7 @@ app.get('/f1/races/circuits/:ref', async (req, res) => {
     }
 });
 
-app.get('/f1/races/circuits/:ref/season/:start/:end', async (req, res) => {
+app.get('/api/races/circuits/:ref/season/:start/:end', async (req, res) => {
     if (req.params.end < req.params.start) {
         res.send({ error: "End year less than start year." });
     }
@@ -282,7 +280,7 @@ app.get('/f1/races/circuits/:ref/season/:start/:end', async (req, res) => {
     }
 });
 
-app.get('/f1/results/:raceId', async (req, res) => {
+app.get('/api/results/:raceId', async (req, res) => {
     const columns = ['resultId',
         'driverId(driverRef, code, forename, surname)',
         'raceId(name, round, year, date)',
@@ -299,7 +297,7 @@ app.get('/f1/results/:raceId', async (req, res) => {
     res.send(data);
 });
 
-app.get('/f1/results/driver/:ref', async (req, res) => {
+app.get('/api/results/driver/:ref', async (req, res) => {
     const params = [];
     params.push(new Param('ilike', 'driverRef', req.params.ref));
 
@@ -317,7 +315,7 @@ app.get('/f1/results/driver/:ref', async (req, res) => {
     }
 });
 
-app.get('/f1/results/driver/:ref/seasons/:start/:end', async (req, res) => {
+app.get('/api/results/driver/:ref/seasons/:start/:end', async (req, res) => {
     if (req.params.end < req.params.start) {
         res.send({ error: "End year less than start year." });
     }
@@ -354,7 +352,7 @@ app.get('/f1/results/driver/:ref/seasons/:start/:end', async (req, res) => {
     }
 });
 
-app.get('/f1/qualifying/:raceId', async (req, res) => {
+app.get('/api/qualifying/:raceId', async (req, res) => {
     const columns = ['qualifyId',
         'driverId(driverRef, code, forename, surname)',
         'raceId(name, round, year, date)',
@@ -369,7 +367,7 @@ app.get('/f1/qualifying/:raceId', async (req, res) => {
     res.send(data);
 });
 
-app.get('/f1/standings/:raceId/drivers', async (req, res) => {
+app.get('/api/standings/:raceId/drivers', async (req, res) => {
     const columns = ['driverStandingsId',
         'driverId(driverRef, code, forename, surname)',
         'raceId(name, round, year, date)',
@@ -383,7 +381,7 @@ app.get('/f1/standings/:raceId/drivers', async (req, res) => {
     res.send(data);
 });
 
-app.get('/f1/standings/:raceId/constructors', async (req, res) => {
+app.get('/api/standings/:raceId/constructors', async (req, res) => {
     const columns = ['constructorStandingsId',
         'constructorId(name, constructorRef, nationality)',
         'raceId(name, round, year, date)',

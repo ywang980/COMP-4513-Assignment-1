@@ -1,4 +1,11 @@
 {
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "16.x",
+    "npm:": "10.x"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.7",
     "express": "^4.18.2"
