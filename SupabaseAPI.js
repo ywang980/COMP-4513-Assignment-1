@@ -11,6 +11,15 @@ app.listen(port, () => {
     console.log(`listening on port: ${port}`);
 });
 
+
+/**
+ * Fetches data from a specified table in Supabase database based on provided columns and parameters.
+ * @param {string} table - The name of the table from which data is to be fetched.
+ * @param {Array<string>} columns - An array of column names to be selected from the table.
+ * @param {Array<Param>} params - An array of parameters defining conditions for the query.
+ * @returns {Promise<Array<Object>|Object>} - A promise that resolves to an array of fetched data objects if successful, 
+ * or an object containing an error message if an error occurs.
+ */
 const fetchData = async (table, columns, params) => {
     try {
         let query = supabase.from(table).select(columns.join(', '));
@@ -35,6 +44,12 @@ const fetchData = async (table, columns, params) => {
     }
 };
 
+/**
+ * Resolves query parameters and modifies the query accordingly.
+ * @param {Object} query - The Supabase query object.
+ * @param {Array<Param>} params - An array of parameters defining conditions for the query.
+ * @returns {Object} - The modified Supabase query object.
+ */
 const resolveParams = (query, params) => {
     params.forEach(param => {
         if (param.condition == 'ilike') {
@@ -63,7 +78,16 @@ const resolveParams = (query, params) => {
     return query;
 }
 
+/**
+ * Represents a parameter for a query condition.
+ */
 class Param {
+    /**
+      * Creates a new Param instance.
+      * @param {string} condition - The condition for the parameter (e.g., 'ilike', 'eq', 'order', 'in', 'prefix', 'lte', 'gte').
+      * @param {string} column - The name of the column to which the condition applies.
+      * @param {string} value - The value to be compared against the column.
+    */
     constructor(condition, column, value) {
         this.condition = condition;
         this.column = column;
@@ -71,6 +95,23 @@ class Param {
     }
 }
 
+/**
+ * Various route handlers.
+ * 
+ * Details:
+ * Reference/ID parameter - pushed onto 'params' array in fetchData call.
+ * ilike condition used for string, eq for exact int, lte/gte for int ranges.
+ * 
+ * Queries referencing relations - columns array modified from default of select
+ * all (e.g., fields related to foreign key substituted in place of foreign key).
+ * 
+ * Queries requiring SQL join - accomplished through multiple fetchData calls.
+ * 1. Fetch relevant data from other tables.
+ * 2. If successful, map this data as an array of foreign keys.
+ * 3. Repeat if necessary, until all relevant foreign key arrays are acquired.
+ * 4. Acquire data by pushing '.in(<foreign key array>)' command to 'params' array.
+ * 
+ */
 app.get('/f1/seasons', async (req, res) => {
     const data = await fetchData('seasons', [], []);
     res.send(data);
