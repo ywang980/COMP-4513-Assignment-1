@@ -1,3 +1,5 @@
+require('globalthis')();
+
 const express = require('express');
 const app = express();
 

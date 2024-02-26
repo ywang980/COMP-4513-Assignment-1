@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.7",
+    "express": "^4.18.2",
+    "globalthis": "^1.0.3",
+    "supabase": "^1.145.4"
+  }
+}
